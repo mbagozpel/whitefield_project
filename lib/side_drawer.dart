@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:whitefiled/admin/admin.dart';
+import 'package:whitefiled/controllers/app_controller.dart';
 import 'package:whitefiled/login/login.dart';
+import 'package:whitefiled/utilities.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({Key? key}) : super(key: key);
+  SideDrawer({Key? key}) : super(key: key);
+  final AppController _controller = Get.find<AppController>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,27 @@ class SideDrawer extends StatelessWidget {
           const Divider(
             thickness: 2,
             color: Colors.white,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+            title: Text(
+              'Admin',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(color: Colors.white),
+            ),
+            onTap: () {
+              if (_controller.user.value.name.trim().toLowerCase() ==
+                  'mba whitefield') {
+                Navigator.pushNamed(context, Admin.routeName);
+              } else {
+                showSnackBar(context: context, text: 'Restricted area');
+              }
+            },
           ),
           ListTile(
             leading: const Icon(

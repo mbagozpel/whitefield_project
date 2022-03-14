@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whitefiled/_models/project.dart';
 import 'package:whitefiled/constants.dart';
 import 'package:whitefiled/side_drawer.dart';
+import 'package:whitefiled/simple_dialog.dart';
 
 class ProjectList extends StatelessWidget {
   static const routeName = '/projectlist';
@@ -37,7 +38,7 @@ class ProjectList extends StatelessWidget {
         backgroundColor: const Color(0XFF283593),
         elevation: 0,
       ),
-      drawer: const SideDrawer(),
+      drawer: SideDrawer(),
       body: Container(
         decoration: const BoxDecoration(gradient: kGradients),
         child: ListView(
@@ -60,7 +61,13 @@ class ProjectList extends StatelessWidget {
                 return projectListTile(
                     leading: color,
                     project: projectList[index],
-                    press: () {},
+                    press: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => ProjectDetails(
+                                project: projectList[index],
+                              ));
+                    },
                     context: context);
               }),
             )
@@ -81,50 +88,29 @@ class ProjectList extends StatelessWidget {
         onTap: press,
         child: Container(
           margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20), color: Colors.grey[700]),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              CircleAvatar(backgroundColor: leading),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(backgroundColor: leading),
-                  const SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 250,
-                        child: Text(
-                          project.projectTopic,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2!
-                              .copyWith(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        project.supervisor,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(color: Colors.white),
-                      ),
-                    ],
+                  SizedBox(
+                    width: 300,
+                    child: Text(
+                      project.projectTopic,
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color: Colors.white, overflow: TextOverflow.clip),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                 ],
               ),
-              Text(
-                project.noOfStudents.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(color: Colors.white),
-              )
             ],
           ),
         ),

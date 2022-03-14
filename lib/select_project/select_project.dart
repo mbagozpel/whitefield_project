@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:whitefiled/_models/project.dart';
+import 'package:get/get.dart';
 import 'package:whitefiled/constants.dart';
+import 'package:whitefiled/controllers/app_controller.dart';
 import 'package:whitefiled/select_project/project_list.dart';
 import 'package:whitefiled/side_drawer.dart';
 
 class SelectProject extends StatelessWidget {
   static const routeName = '/selectproject';
-  const SelectProject({Key? key}) : super(key: key);
+  SelectProject({Key? key}) : super(key: key);
+  final AppController _controller = Get.find<AppController>();
 
   @override
   Widget build(BuildContext context) {
@@ -16,45 +18,63 @@ class SelectProject extends StatelessWidget {
         backgroundColor: const Color(0XFF283593),
         elevation: 0,
       ),
-      drawer: const SideDrawer(),
+      drawer: SideDrawer(),
       body: Container(
         decoration: const BoxDecoration(gradient: kGradients),
         child: ListView(
           children: [
             SizedBox(height: _size.height * 0.2),
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    'Select Project Options',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(color: Colors.blue[50]),
-                  ),
-                  SizedBox(height: _size.height * 0.1),
-                  projectTile(
-                      leading: Icons.settings,
-                      text: 'Electronics Projects',
-                      suffix: Icons.arrow_forward_ios,
-                      press: () {
-                        Navigator.pushNamed(context, ProjectList.routeName,
-                            arguments: {
-                              "projectList": projectList,
-                              "title": "Electronics Projects"
-                            });
-                      },
-                      context: context),
-                  SizedBox(height: _size.height * 0.03),
-                  projectTile(
-                      leading: Icons.power,
-                      text: 'Power Projects',
-                      suffix: Icons.arrow_forward_ios,
-                      press: () {},
-                      context: context)
-                ],
-              ),
-            )
+            Obx(
+              () => _controller.isLoading.isTrue
+                  ? CircularProgressIndicator()
+                  : Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Select Project Options',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(color: Colors.blue[50]),
+                          ),
+                          SizedBox(height: _size.height * 0.1),
+                          projectTile(
+                              leading: Icons.settings,
+                              text: 'Electronics Projects',
+                              suffix: Icons.arrow_forward_ios,
+                              press: () {
+                                Navigator.pushNamed(
+                                    context, ProjectList.routeName,
+                                    arguments: {
+                                      "projectList": _controller.projectList
+                                          .where((p) =>
+                                              p.projectType == 'electronics')
+                                          .toList(),
+                                      "title": "Electronics Projects"
+                                    });
+                              },
+                              context: context),
+                          SizedBox(height: _size.height * 0.03),
+                          projectTile(
+                              leading: Icons.power,
+                              text: 'Power Projects',
+                              suffix: Icons.arrow_forward_ios,
+                              press: () {
+                                Navigator.pushNamed(
+                                    context, ProjectList.routeName,
+                                    arguments: {
+                                      "projectList": _controller.projectList
+                                          .where(
+                                              (p) => p.projectType == 'power')
+                                          .toList(),
+                                      "title": "Electronics Projects"
+                                    });
+                              },
+                              context: context)
+                        ],
+                      ),
+                    ),
+            ),
           ],
         ),
       ),
